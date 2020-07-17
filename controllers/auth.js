@@ -15,15 +15,32 @@ exports.signup = async(req, res) => {
 
 exports.signin = (req, res) => {
     //find user based on email
+    const {email, password} = req.body
+    User.findOne({email}, (err, user) => {
+        //if err or no user
+        if(err || !user){
+            return res.status(401).json({
+                error: "User with tht email does not exist. Please signup"
+            })
+        }
+        //if user is found make sure email and password match
+        //create authenticate method and use here
+        if(!user.authenticate(password)) {
+            return res.status(401).json({
+                error: "Email and Password do not match"
+            })
+        }
+        //generate a token with user_id and secret
+        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET);
+        //persist the token as 't' in cookie wit expiry date
+        res.cookie("t", token, {expire: new Date() + 9999})
+        //return response with user and token to te frontend client
+        const {_id, name, email} = user
+        return res.json({token, user: {_id, email, name} })
+    });
+};
 
-    //if error or no user
-
-    //if user, authenticate
-
-    //generate a token with user_id and secret
-
-    //persist the token as 't' in cookie wit expiry date
-
-    //return response with user and token to te frontend client
-
+exports.signout = (req, res) => {
+    res.clearCookie("t");
+    return res.json({message: "Signout success!"})
 }
