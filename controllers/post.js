@@ -18,3 +18,4 @@ exports.createPost = (req, res) => {
         })
     })
 };
+
