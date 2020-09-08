@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const expressValidator = require("express-validator");
 const dotenv = require("dotenv");
 const fs = require('fs');
+const cors = require('cors');
 
 //setting up .env file connection
 dotenv.config()
@@ -43,6 +44,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
+app.use(cors());
 app.use("/", postRoutes);
 app.use("/", userRoutes);
 app.use("/", authRoutes);
